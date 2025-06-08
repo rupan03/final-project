@@ -29,8 +29,16 @@ def preprocess_text(text):
 st.title("📱 Smartphone Review Sentiment Analyzer")
 review = st.text_area("Enter your review:")
 
-if st.button("Analyze"):
-    cleaned = preprocess_text(review)
-    vectorized = tfidf.transform([cleaned]).toarray()
-    result = lr_model.predict(vectorized)[0]
-    st.success(f"Predicted Sentiment: **{result}**")
+from huggingface_hub import hf_hub_download
+import pickle
+
+# Download model
+model_path = hf_hub_download(repo_id="mythic003/sentiment-analysis-model", filename="lr_model.pkl")
+tfidf_path = hf_hub_download(repo_id="mythic003/sentiment-analysis-model", filename="tfidf.pkl")
+
+# Load model
+with open(model_path, "rb") as f:
+    model = pickle.load(f)
+
+with open(tfidf_path, "rb") as f:
+    tfidf = pickle.load(f)
